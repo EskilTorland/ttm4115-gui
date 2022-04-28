@@ -27,8 +27,9 @@ class QuizButtonContainer extends StatelessWidget {
               boxShadow: [
                 BoxShadow(
                     color: Colors.orangeAccent.withOpacity(0.5),
-                    spreadRadius: 7,
-                    blurRadius: 7)
+                    spreadRadius: 1,
+                    blurRadius: 5,
+                    offset: Offset(0,5))
               ],
             ),
             child: Center(

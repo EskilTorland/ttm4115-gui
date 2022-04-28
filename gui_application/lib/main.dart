@@ -69,13 +69,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 SizedBox(
                   width: 500,
                 ),
-                LeaderBoard(),
-                SizedBox(width: 500)
               ],
             ),
             Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
+                LeaderBoard(),
+                SizedBox(width: 500)
                 
               ],
             ),
