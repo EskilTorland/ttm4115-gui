@@ -1,0 +1,1 @@
+web: cd build/web && cordova run browser --release --port=$PORT

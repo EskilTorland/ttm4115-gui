@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gui_application/AnswerBox.dart';
 
@@ -10,12 +11,19 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   int _questionIndex = 0;
   int _totalScore = 0;
-  bool visible = true;
+  bool gameEnded = true;
+
+  void escOnPress() {
+    Navigator.pop(context);
+  }
 
   void questionAnswered(bool answerCorrect) {
     setState(() {
       if (_questionIndex == _questions.length - 1) {
-        visible = false;
+        if (answerCorrect) {
+          _totalScore++;
+        }
+        gameEnded = false;
         return;
       }
       if (answerCorrect) {
@@ -26,6 +34,10 @@ class _QuizPageState extends State<QuizPage> {
   }
 
   Color setColor(int index) {
+    if (!gameEnded) {
+      return Color.fromARGB(255, 10, 65, 110);
+    }
+
     if (index == _questionIndex) {
       return Colors.lightBlue;
     }
@@ -38,6 +50,7 @@ class _QuizPageState extends State<QuizPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.deepOrangeAccent,
         centerTitle: true,
         title: Text("Quiz"),
@@ -55,7 +68,9 @@ class _QuizPageState extends State<QuizPage> {
                 borderRadius: BorderRadius.circular(10)),
             child: Center(
                 child: Text(
-              _questions[_questionIndex]['question'],
+              gameEnded
+                  ? _questions[_questionIndex]['question']
+                  : "Thank you for playing",
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontSize: 20,
@@ -63,21 +78,34 @@ class _QuizPageState extends State<QuizPage> {
                   fontWeight: FontWeight.bold),
             )),
           ),
-          
           Visibility(
-            visible: visible,
+            visible: !gameEnded,
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.2,
+              //height: 60,
+              child: ElevatedButton(
+                onPressed: escOnPress,
+                child: Text(
+                  "Exit",
+                  style: TextStyle(fontSize: 96,),
+                  
+                ),
+              ),
+            ),
+          ),
+          Visibility(
+            visible: gameEnded,
             child: Column(
-                children: [
-          
-            ...(_questions[_questionIndex]['answers']
-                    as List<Map<String, dynamic>>)
-                .map((answer) => AnswerBox(
-                      answerText: answer['answertext'],
-                      onTap: () {
-                        questionAnswered(answer['answerCorrect']);
-                      },
-                    )),
-                ],
+              children: [
+                ...(_questions[_questionIndex]['answers']
+                        as List<Map<String, dynamic>>)
+                    .map((answer) => AnswerBox(
+                          answerText: answer['answertext'],
+                          onTap: () {
+                            questionAnswered(answer['answerCorrect']);
+                          },
+                        )),
+              ],
             ),
           ),
           Container(
